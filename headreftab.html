@@ -199,7 +199,7 @@
       const matchnum = document.getElementById("matchnumd").innerHTML
       const matchtype = document.getElementById("matchtyped").innerHTML
 
-      const url = "http://localhost:3000/" + matchtype + "matches/" + matchnum;
+      const url = "https://uvrc-web.vercel.app/" + matchtype + "matches/" + matchnum;
       const form = event.currentTarget;
       try {
         const formData = new FormData(form);
@@ -250,7 +250,7 @@
             document.getElementById("drblue").innerHTML = myObj.redblue;
             console.log(myObj)
             }
-        xmlhttp.open("GET", "http://localhost:3000/" + matchtype +  "matches/" + matchnum);
+        xmlhttp.open("GET", "https://uvrc-web.vercel.app/" + matchtype +  "matches/" + matchnum);
         xmlhttp.send();
     }
     
