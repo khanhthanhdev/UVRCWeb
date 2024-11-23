@@ -1,11 +1,11 @@
 // Configuration for the application
 const config = {
     // API base URL - change this for different environments
-    apiBaseUrl: 'https://uvrc-web.vercel.app/api', // Use local server for now
+    apiBaseUrl: 'https://uvrc-web.vercel.app', // Remove extra /api since server handles it
 
     // Helper function to make API calls
     async fetchApi(endpoint, options = {}) {
-        const url = `${this.apiBaseUrl}/${endpoint}`;
+        const url = `${this.apiBaseUrl}/api/${endpoint}`; // Add /api here instead
         console.log('Fetching from URL:', url);
         
         try {
