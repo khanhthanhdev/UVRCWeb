@@ -2,11 +2,26 @@ const jsonServer = require('json-server');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const server = express();
 
+// Initialize database
+const DB_FILE = path.join(__dirname, 'db.json');
+
+// Ensure db.json exists
+if (!fs.existsSync(DB_FILE)) {
+    fs.writeFileSync(DB_FILE, JSON.stringify({
+        team: [],
+        pmmatches: [],
+        qmmatches: [],
+        pomatches: [],
+        results: []
+    }, null, 2));
+}
+
 // Create JSON Server router with custom options
-const router = jsonServer.router('db.json');
+const router = jsonServer.router(DB_FILE);
 const middlewares = jsonServer.defaults({
     static: '.',
     noCors: false,
@@ -66,23 +81,52 @@ server.get('/api', (req, res) => {
 
 // Mount json-server router under /api
 server.use('/api', (req, res, next) => {
-    // Ensure db.json exists and is readable
+    // Check if we can access the database
     try {
-        require('./db.json');
+        const db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+        // Validate database structure
+        const requiredCollections = ['team', 'pmmatches', 'qmmatches', 'pomatches', 'results'];
+        const missingCollections = requiredCollections.filter(collection => !db[collection]);
+        
+        if (missingCollections.length > 0) {
+            // Initialize missing collections
+            missingCollections.forEach(collection => {
+                db[collection] = [];
+            });
+            fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
+        }
         next();
     } catch (error) {
-        console.error('Error reading db.json:', error);
-        res.status(500).json({ error: 'Database file not accessible' });
+        console.error('Database error:', error);
+        res.status(500).json({
+            error: 'Database error',
+            message: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+            path: req.path
+        });
     }
 }, router);
 
 // Health check endpoint
 server.get('/health', (req, res) => {
-    res.json({ 
-        status: 'UP',
-        timestamp: new Date().toISOString(),
-        environment: process.env.VERCEL ? 'production' : 'development'
-    });
+    try {
+        const db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+        res.json({
+            status: 'UP',
+            timestamp: new Date().toISOString(),
+            environment: process.env.VERCEL ? 'production' : 'development',
+            database: {
+                exists: true,
+                collections: Object.keys(db),
+                size: fs.statSync(DB_FILE).size
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'DOWN',
+            timestamp: new Date().toISOString(),
+            error: 'Database not accessible'
+        });
+    }
 });
 
 // Handle all other routes by serving index.html
@@ -92,10 +136,10 @@ server.get('*', (req, res) => {
 
 // Error handling middleware
 server.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error('Server error:', err);
     res.status(500).json({
-        error: 'Something went wrong!',
-        message: err.message,
+        error: 'Internal server error',
+        message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong',
         path: req.path
     });
 });
