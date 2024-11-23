@@ -21,22 +21,18 @@ server.use(cors({
         'http://127.0.0.1:3000',
         'http://localhost:5000',
         'http://127.0.0.1:5000',
-        'https://uvrc-web.vercel.app',
-        /\.vercel\.app$/
+        'https://uvrc-web.vercel.app'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-    credentials: true,
-    optionsSuccessStatus: 204
+    credentials: false // Disable credentials requirement
 }));
 
 // Additional CORS headers for Vercel
 server.use((req, res, next) => {
-    const origin = req.headers.origin;
-    if (origin) {
-        res.header('Access-Control-Allow-Origin', origin);
-        res.header('Access-Control-Allow-Credentials', 'true');
-    }
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
     next();
 });
 
@@ -64,56 +60,33 @@ server.get('/api', (req, res) => {
     });
 });
 
-// Mount json-server router under /api
-server.use('/api', (req, res, next) => {
-    // Ensure db.json exists and is readable
-    try {
-        require('./db.json');
-        next();
-    } catch (error) {
-        console.error('Error reading db.json:', error);
-        res.status(500).json({ error: 'Database file not accessible' });
-    }
-}, router);
+// Mount the router under /api
+server.use('/api', router);
 
-// Health check endpoint
+// Add health check endpoint
 server.get('/health', (req, res) => {
-    res.json({ 
-        status: 'UP',
-        timestamp: new Date().toISOString(),
-        environment: process.env.VERCEL ? 'production' : 'development'
-    });
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Handle all other routes by serving index.html
-server.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'index.html'));
-});
-
-// Error handling middleware
+// Add error handling middleware
 server.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        error: 'Something went wrong!',
-        message: err.message,
-        path: req.path
-    });
+    console.error('Server Error:', err);
+    res.status(500).json({ error: err.message || 'Internal Server Error' });
 });
 
-// Export for Vercel
-if (process.env.VERCEL) {
-    module.exports = server;
-} else {
+// Handle 404s
+server.use((req, res) => {
+    console.log(`404 - Not Found: ${req.method} ${req.path}`);
+    res.status(404).json({ error: 'Not Found' });
+});
+
+// Start server if not running as serverless
+if (process.env.NODE_ENV !== 'production') {
     const PORT = process.env.PORT || 3000;
     server.listen(PORT, () => {
-        console.log(`Server is running on http://localhost:${PORT}`);
-        console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-        console.log('\nAvailable endpoints:');
-        console.log('GET /api - API documentation');
-        console.log('GET /api/team - Team information');
-        console.log('GET /api/pmmatches - PM matches');
-        console.log('GET /api/qmmatches - QM matches');
-        console.log('GET /api/pomatches - PO matches');
-        console.log('GET /api/results - Results');
+        console.log(`Server is running on port ${PORT}`);
     });
 }
+
+// Export for serverless
+module.exports = server;

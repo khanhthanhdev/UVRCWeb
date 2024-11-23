@@ -200,13 +200,16 @@
         const plainFormData = Object.fromEntries(formData.entries());
         
         try {
-            // Update the match score using the new scoring system
-            const result = await api.updateMatchScore('QM', plainFormData.id, plainFormData);
+            // Get the match ID from the form
+            const matchId = document.getElementById('matchnum').value;
+            
+            // Update match score using the new scoring system
+            const result = await api.updateMatchScore('QM', matchId, plainFormData);
             console.log('Match data saved:', result);
             config.showError('Match data saved successfully!');
             
-            // Refresh the display
-            await display(plainFormData.id);
+            // Refresh the display to show updated scores
+            await display(matchId);
         } catch (error) {
             console.error('Error saving match data:', error);
             config.showError('Failed to save match data: ' + error.message);
@@ -215,7 +218,8 @@
 
     async function display(matchnum) {
         try {
-            const matchData = await api.loadQMMatch(matchnum);
+            // Get match data using the new scoring system
+            const matchData = await api.getMatchScore('QM', matchnum);
             console.log('Match data loaded:', matchData);
             
             // Update display values
@@ -235,10 +239,15 @@
             document.getElementById("dpenblue").innerHTML = matchData.penblue * -50;
 
             // Calculate and display total scores
-            const gered = parseInt(matchData.hexred) * 30 + parseInt(matchData.circlered) * 60 + 
-                         parseInt(matchData.rwastered) * 50 + parseInt(matchData.wastehpred) * 20;
-            const geblue = parseInt(matchData.hexblue) * 30 + parseInt(matchData.circleblue) * 60 + 
-                          parseInt(matchData.rwasteblue) * 50 + parseInt(matchData.wastehpblue) * 20;
+            const gered = parseInt(matchData.hexred || 0) * 30 + 
+                         parseInt(matchData.circlered || 0) * 60 + 
+                         parseInt(matchData.rwastered || 0) * 50 + 
+                         parseInt(matchData.wastehpred || 0) * 20;
+            
+            const geblue = parseInt(matchData.hexblue || 0) * 30 + 
+                          parseInt(matchData.circleblue || 0) * 60 + 
+                          parseInt(matchData.rwasteblue || 0) * 50 + 
+                          parseInt(matchData.wastehpblue || 0) * 20;
             
             document.getElementById("dgered").innerHTML = gered;
             document.getElementById("dgeblue").innerHTML = geblue;
@@ -273,14 +282,31 @@
             }
 
             // Calculate and display final scores
-            const scorered = gered + ascorered + parseInt(matchData.wwastered) * -20 + 
-                           parseInt(matchData.wwaterred) * -30 + parseInt(matchData.penred) * -50;
-            const scoreblue = geblue + ascoreblue + parseInt(matchData.wwasteblue) * -20 + 
-                            parseInt(matchData.wwaterblue) * -30 + parseInt(matchData.penblue) * -50;
-
+            const scorered = gered + ascorered + 
+                           parseInt(matchData.wwastered || 0) * -20 + 
+                           parseInt(matchData.wwaterred || 0) * -30 + 
+                           parseInt(matchData.penred || 0) * -50;
+            
+            const scoreblue = geblue + ascoreblue + 
+                            parseInt(matchData.wwasteblue || 0) * -20 + 
+                            parseInt(matchData.wwaterblue || 0) * -30 + 
+                            parseInt(matchData.penblue || 0) * -50;
+            
             document.getElementById("dscorered").innerHTML = scorered;
             document.getElementById("dscoreblue").innerHTML = scoreblue;
 
+            // Update match data with calculated scores
+            const scoreData = {
+                ...matchData,
+                scorered: scorered,
+                scoreblue: scoreblue,
+                ascorered: ascorered,
+                ascoreblue: ascoreblue
+            };
+            
+            // Update the match with final scores
+            await api.updateMatchScore('QM', matchnum, scoreData);
+            
         } catch (error) {
             console.error('Error displaying match data:', error);
             config.showError('Failed to display match data: ' + error.message);
