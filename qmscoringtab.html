@@ -3,54 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QM SCORING TAB</title>
-</head>
-<style>
-    h1 {
-        font-family:'Noto Sans';
-        margin-top: 10px;
-        font-size: 42px;
-        text-align: center;
-        color: #A50C0C;
-        font-weight: bold;
-      }
-    th {
-        font-family: 'Noto Sans';
-        font-size: 24px;
-        text-align: center;
-        font-weight: bold;
-        border: 1px solid black;
-        padding: 10px;
-    }
-    tr{
-        width: 1000px;
-    }
-    td {
-        font-family: 'Noto Sans';
-        font-size: 21px;
-        padding: 10px;
-        border: 1px solid black;
+    <title>UVRC - QM SCORING TAB</title>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <style>
+        h1 {
+            font-family:'Noto Sans';
+            margin-top: 10px;
+            font-size: 42px;
+            text-align: center;
+            color: #A50C0C;
+            font-weight: bold;
+          }
+        th {
+            font-family: 'Noto Sans';
+            font-size: 24px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid black;
+            padding: 10px;
+        }
+        tr{
+            width: 1000px;
+        }
+        td {
+            font-family: 'Noto Sans';
+            font-size: 21px;
+            padding: 10px;
+            border: 1px solid black;
  
-    }
-    table {
-        border-collapse: collapse;
-        margin-left: auto;
-        margin-right: auto;
-        border: 1px solid black;
-    }
-    .head {
-        font-family: 'Noto Sans';
-        font-size: 24px;
-        text-align: center;
-        font-weight: bold;
-        border: 1px solid black;
-        padding: 10px;
-    }
-    .left {width: 1000px;}
-    .right {width: 300px;}
-
-
-</style>
+        }
+        table {
+            border-collapse: collapse;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid black;
+        }
+        .head {
+            font-family: 'Noto Sans';
+            font-size: 24px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid black;
+            padding: 10px;
+        }
+        .left {width: 1000px;}
+        .right {width: 300px;}
+    </style>
+</head>
 <body>
     <h1>UVRC - QM SCORING TAB</h1>
     <table>
@@ -181,184 +181,113 @@
         </tr>
         </form>
     </table>
-</body>
-<script>
+    <script>
     async function getmatchnum(event) {
         event.preventDefault();
-        const form = event.currentTarget;
+        const matchnum = document.getElementById("matchnum").value;
         try {
-            const formData = new FormData(form);
-            const plainFormData = Object.fromEntries(formData.entries());
-            document.getElementById("dmatchnum").innerHTML = plainFormData.matchnum;
-            console.log(plainFormData);
-            display(plainFormData.matchnum);
-        }
-        catch (error) {
-            console.error(error);
+            await display(matchnum);
+        } catch (error) {
+            console.error('Error fetching match data:', error);
+            config.showError('Failed to fetch match data: ' + error.message);
         }
     }
+
     async function getdata(event) {
         event.preventDefault();
-        const matchnum = document.getElementById("dmatchnum").innerHTML
-        const url = "http://localhost:3000/qmmatches/" + matchnum;
-        const form = event.currentTarget;
+        const form = event.target;
+        const formData = new FormData(form);
+        const plainFormData = Object.fromEntries(formData.entries());
+        
         try {
-            const formData = new FormData(form);
-            const plainFormData = Object.fromEntries(formData.entries());
-            console.log(plainFormData);
-            document.getElementById("dhexred").innerHTML = plainFormData.hexred * 30;
-            document.getElementById("dhexblue").innerHTML = plainFormData.hexblue * 30;
-            document.getElementById("dwwastered").innerHTML = plainFormData.wwastered * -20;
-            document.getElementById("dwwasteblue").innerHTML = plainFormData.wwasteblue * -20;
-            document.getElementById("dcirclered").innerHTML = plainFormData.circlered * 60;
-            document.getElementById("dcircleblue").innerHTML = plainFormData.circleblue * 60;
-            document.getElementById("drwastered").innerHTML = plainFormData.rwastered * 50;
-            document.getElementById("drwasteblue").innerHTML = plainFormData.rwasteblue * 50;
-            document.getElementById("dwwaterred").innerHTML = plainFormData.wwaterred * -30;
-            document.getElementById("dwwaterblue").innerHTML = plainFormData.wwaterblue * -30;
-            document.getElementById("dwastehpred").innerHTML = plainFormData.wastehpred * 20;
-            document.getElementById("dwastehpblue").innerHTML = plainFormData.wastehpblue * 20;
-            document.getElementById("dwaterhpred").innerHTML = plainFormData.waterhpred * 5;
-            document.getElementById("dwaterhpblue").innerHTML = plainFormData.waterhpblue * 5;
-            document.getElementById("dwatercarred").innerHTML = plainFormData.watercarred * 10;
-            document.getElementById("dwatercarblue").innerHTML = plainFormData.watercarblue * 10;
-            const gered = Number(plainFormData.hexred) + Number(plainFormData.wwastered) + Number(plainFormData.circlered) + Number(plainFormData.rwastered) + Number(plainFormData.wwaterred) + Number(plainFormData.wastehpred) + Number(plainFormData.waterhpred) + Number(plainFormData.watercarred)
-            const geblue = Number(plainFormData.hexblue) + Number(plainFormData.wwasteblue) + Number(plainFormData.circleblue) + Number(plainFormData.rwasteblue) + Number(plainFormData.wwaterblue) + Number(plainFormData.wastehpblue) + Number(plainFormData.waterhpblue) + Number(plainFormData.watercarblue)
-            const ge = gered + geblue
-            document.getElementById("genumred").innerHTML = ge;
-            document.getElementById("genumblue").innerHTML = ge;
-            const scorered = Number(plainFormData.hexred) * 30 + Number(plainFormData.wwastered) * -20 + Number(plainFormData.circlered)*60 + Number(plainFormData.rwastered)*50 + Number(plainFormData.wwaterred)*-30 + Number(plainFormData.wastehpred)*20 + Number(plainFormData.waterhpred)*5 + Number(plainFormData.watercarred)*10
-            const scoreblue = Number(plainFormData.hexblue) * 30 + Number(plainFormData.wwasteblue)*-20 + Number(plainFormData.circleblue)*60 + Number(plainFormData.rwasteblue)*50 + Number(plainFormData.wwaterblue)*-30 + Number(plainFormData.wastehpblue)*20 + Number(plainFormData.waterhpblue)*5 + Number(plainFormData.watercarblue)*10
-            document.getElementById("scorered").innerHTML = scorered;
-            document.getElementById("scoreblue").innerHTML = scoreblue;
-            var ascore = 0;
-            if (ge == 240) {
-                document.getElementById("dared").innerHTML = 300;
-                document.getElementById("dablue").innerHTML = 300;
-                ascore = 300;
-            }
-            else if (ge > 135) {
-                document.getElementById("dared").innerHTML = 200;
-                document.getElementById("dablue").innerHTML = 200;
+            const result = await api.saveQMMatch(plainFormData);
+            console.log('Match data saved:', result);
+            config.showError('Match data saved successfully!');
+        } catch (error) {
+            console.error('Error saving match data:', error);
+            config.showError('Failed to save match data: ' + error.message);
+        }
+    }
 
-                ascore = 200;
-            }
-            else if (ge > 90) {
-                document.getElementById("dared").innerHTML = 100;
-                document.getElementById("dablue").innerHTML = 100;
-
-                ascore = 100;
-            }
-            else {
-                document.getElementById("dared").innerHTML = 0;
-                document.getElementById("dablue").innerHTML = 0;
-                ascore = 0;
-            }
+    async function display(matchnum) {
+        try {
+            const matchData = await api.loadQMMatch(matchnum);
+            console.log('Match data loaded:', matchData);
             
-            formData.append('scorered', scorered);
-            formData.append('scoreblue', scoreblue);
-            formData.append('ascore',ascore);
+            // Update display values
+            document.getElementById("dhexred").innerHTML = matchData.hexred * 30;
+            document.getElementById("dhexblue").innerHTML = matchData.hexblue * 30;
+            document.getElementById("dwwastered").innerHTML = matchData.wwastered * -20;
+            document.getElementById("dwwasteblue").innerHTML = matchData.wwasteblue * -20;
+            document.getElementById("dcirclered").innerHTML = matchData.circlered * 60;
+            document.getElementById("dcircleblue").innerHTML = matchData.circleblue * 60;
+            document.getElementById("drwastered").innerHTML = matchData.rwastered * 50;
+            document.getElementById("drwasteblue").innerHTML = matchData.rwasteblue * 50;
+            document.getElementById("dwwaterred").innerHTML = matchData.wwaterred * -30;
+            document.getElementById("dwwaterblue").innerHTML = matchData.wwaterblue * -30;
+            document.getElementById("dwastehpred").innerHTML = matchData.wastehpred * 20;
+            document.getElementById("dwastehpblue").innerHTML = matchData.wastehpblue * 20;
+            document.getElementById("dpenred").innerHTML = matchData.penred * -50;
+            document.getElementById("dpenblue").innerHTML = matchData.penblue * -50;
 
-            const newplainFormData = Object.fromEntries(formData.entries());
-            const responseData = await postFormDataAsJson(url,newplainFormData);
-            console.log({responseData});
-        }
-        catch (error) {
-            console.error(error);
-        }
-    }
-    async function postFormDataAsJson( url, data ) {
-        const jsondata = JSON.stringify(data);
-        console.log(data);
-        const fetchOptions = {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: jsondata,
-        };
-      
-        const response = await fetch(url, fetchOptions);
-      
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          throw new Error(errorMessage);
-        }
-      
-        return response.json();
-    }
-    function display(matchnum) {
-        const xmlhttp = new XMLHttpRequest();
-        xmlhttp.onload = function() {
-            const plainFormData = JSON.parse(this.responseText);
-            console.log(plainFormData);
-            document.getElementById("dhexred").innerHTML = plainFormData.hexred * 30;
-            document.getElementById("dhexblue").innerHTML = plainFormData.hexblue * 30;
-            document.getElementById("dwwastered").innerHTML = plainFormData.wwastered * -20;
-            document.getElementById("dwwasteblue").innerHTML = plainFormData.wwasteblue * -20;
-            document.getElementById("dcirclered").innerHTML = plainFormData.circlered * 60;
-            document.getElementById("dcircleblue").innerHTML = plainFormData.circleblue * 60;
-            document.getElementById("drwastered").innerHTML = plainFormData.rwastered * 50;
-            document.getElementById("drwasteblue").innerHTML = plainFormData.rwasteblue * 50;
-            document.getElementById("dwwaterred").innerHTML = plainFormData.wwaterred * -30;
-            document.getElementById("dwwaterblue").innerHTML = plainFormData.wwaterblue * -30;
-            document.getElementById("dwastehpred").innerHTML = plainFormData.wastehpred * 20;
-            document.getElementById("dwastehpblue").innerHTML = plainFormData.wastehpblue * 20;
-            document.getElementById("dwaterhpred").innerHTML = plainFormData.waterhpred * 5;
-            document.getElementById("dwaterhpblue").innerHTML = plainFormData.waterhpblue * 5;
-            document.getElementById("dwatercarred").innerHTML = plainFormData.watercarred * 10;
-            document.getElementById("dwatercarblue").innerHTML = plainFormData.watercarblue * 10;
-            const gered = Number(plainFormData.hexred) + Number(plainFormData.wwastered) + Number(plainFormData.circlered) + Number(plainFormData.rwastered) + Number(plainFormData.wwaterred) + Number(plainFormData.wastehpred) + Number(plainFormData.waterhpred) + Number(plainFormData.watercarred)
-            const geblue = Number(plainFormData.hexblue) + Number(plainFormData.wwasteblue) + Number(plainFormData.circleblue) + Number(plainFormData.rwasteblue) + Number(plainFormData.wwaterblue) + Number(plainFormData.wastehpblue) + Number(plainFormData.waterhpblue) + Number(plainFormData.watercarblue)
-            document.getElementById("genumred").innerHTML = gered;
-            document.getElementById("genumblue").innerHTML = geblue;
-            const scorered = Number(plainFormData.hexred) * 30 + Number(plainFormData.wwastered) * -20 + Number(plainFormData.circlered)*60 + Number(plainFormData.rwastered)*50 + Number(plainFormData.wwaterred)*-30 + Number(plainFormData.wastehpred)*20 + Number(plainFormData.waterhpred)*5 + Number(plainFormData.watercarred)*10
-            const scoreblue = Number(plainFormData.hexblue) * 30 + Number(plainFormData.wwasteblue)*-20 + Number(plainFormData.circleblue)*60 + Number(plainFormData.rwasteblue)*50 + Number(plainFormData.wwaterblue)*-30 + Number(plainFormData.wastehpblue)*20 + Number(plainFormData.waterhpblue)*5 + Number(plainFormData.watercarblue)*10
-            document.getElementById("scorered").innerHTML = scorered;
-            document.getElementById("scoreblue").innerHTML = scoreblue;
-            var ascorered = 0;
-            var ascoreblue = 0;
-            if (gered == 240) {
+            // Calculate and display total scores
+            const gered = parseInt(matchData.hexred) * 30 + parseInt(matchData.circlered) * 60 + 
+                         parseInt(matchData.rwastered) * 50 + parseInt(matchData.wastehpred) * 20;
+            const geblue = parseInt(matchData.hexblue) * 30 + parseInt(matchData.circleblue) * 60 + 
+                          parseInt(matchData.rwasteblue) * 50 + parseInt(matchData.wastehpblue) * 20;
+            
+            document.getElementById("dgered").innerHTML = gered;
+            document.getElementById("dgeblue").innerHTML = geblue;
+
+            // Calculate achievement scores
+            let ascorered = 0;
+            if (gered > 180) {
                 document.getElementById("dared").innerHTML = 300;
                 ascorered = 300;
-            }
-            else if (gered > 135) {
+            } else if (gered > 135) {
                 document.getElementById("dared").innerHTML = 200;
-                ascoreblue = 200;
-            }
-            else if (gered > 90) {
+                ascorered = 200;
+            } else if (gered > 90) {
                 document.getElementById("dared").innerHTML = 100;
                 ascorered = 100;
-            }
-            else {
+            } else {
                 document.getElementById("dared").innerHTML = 0;
             }
-            if (geblue == 240) {
+
+            let ascoreblue = 0;
+            if (geblue > 180) {
                 document.getElementById("dablue").innerHTML = 300;
                 ascoreblue = 300;
-            }
-            else if (geblue > 135) {
+            } else if (geblue > 135) {
                 document.getElementById("dablue").innerHTML = 200;
                 ascoreblue = 200;
-            }
-            else if (geblue > 90) {
+            } else if (geblue > 90) {
                 document.getElementById("dablue").innerHTML = 100;
                 ascoreblue = 100;
-            }
-            else {
+            } else {
                 document.getElementById("dablue").innerHTML = 0;
             }
+
+            // Calculate and display final scores
+            const scorered = gered + ascorered + parseInt(matchData.wwastered) * -20 + 
+                           parseInt(matchData.wwaterred) * -30 + parseInt(matchData.penred) * -50;
+            const scoreblue = geblue + ascoreblue + parseInt(matchData.wwasteblue) * -20 + 
+                            parseInt(matchData.wwaterblue) * -30 + parseInt(matchData.penblue) * -50;
+
+            document.getElementById("dscorered").innerHTML = scorered;
+            document.getElementById("dscoreblue").innerHTML = scoreblue;
+
+        } catch (error) {
+            console.error('Error displaying match data:', error);
+            config.showError('Failed to display match data: ' + error.message);
         }
-        xmlhttp.open("GET", "http://localhost:3000/qmmatches/" + matchnum);
-        xmlhttp.send();
     }
 
-
+    // Add event listeners
     const Form1 = document.getElementById("formmatchnum");
-    Form1.addEventListener("submit",getmatchnum);
+    Form1.addEventListener("submit", getmatchnum);
     const Form2 = document.getElementById("getdata");
-    Form2.addEventListener("submit",getdata);
-    
-</script>
+    Form2.addEventListener("submit", getdata);
+    </script>
+</body>
 </html>
