@@ -7,10 +7,32 @@ const fs = require('fs');
 const server = express();
 
 // Initialize database
-const DB_FILE = path.join(__dirname, 'db.json');
+const DB_FILE = process.env.VERCEL 
+    ? path.join('/tmp', 'db.json')  // Use /tmp in Vercel
+    : path.join(__dirname, 'db.json');
 
-// Ensure db.json exists
-if (!fs.existsSync(DB_FILE)) {
+// Ensure db.json exists and is writable
+if (process.env.VERCEL) {
+    // In Vercel, copy db.json to /tmp on startup
+    try {
+        const sourceDb = path.join(__dirname, 'db.json');
+        if (fs.existsSync(sourceDb)) {
+            fs.copyFileSync(sourceDb, DB_FILE);
+        } else {
+            // Initialize with empty data
+            fs.writeFileSync(DB_FILE, JSON.stringify({
+                team: [],
+                pmmatches: [],
+                qmmatches: [],
+                pomatches: [],
+                results: []
+            }, null, 2));
+        }
+    } catch (error) {
+        console.error('Error initializing database:', error);
+    }
+} else if (!fs.existsSync(DB_FILE)) {
+    // In development, create db.json if it doesn't exist
     fs.writeFileSync(DB_FILE, JSON.stringify({
         team: [],
         pmmatches: [],
@@ -75,7 +97,8 @@ server.get('/api', (req, res) => {
             pomatches: '/api/pomatches',
             results: '/api/results'
         },
-        environment: process.env.VERCEL ? 'production' : 'development'
+        environment: process.env.VERCEL ? 'production' : 'development',
+        dbPath: DB_FILE
     });
 });
 
@@ -101,7 +124,8 @@ server.use('/api', (req, res, next) => {
         res.status(500).json({
             error: 'Database error',
             message: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
-            path: req.path
+            path: req.path,
+            dbPath: DB_FILE
         });
     }
 }, router);
@@ -116,6 +140,7 @@ server.get('/health', (req, res) => {
             environment: process.env.VERCEL ? 'production' : 'development',
             database: {
                 exists: true,
+                path: DB_FILE,
                 collections: Object.keys(db),
                 size: fs.statSync(DB_FILE).size
             }
@@ -124,7 +149,9 @@ server.get('/health', (req, res) => {
         res.status(500).json({
             status: 'DOWN',
             timestamp: new Date().toISOString(),
-            error: 'Database not accessible'
+            error: 'Database not accessible',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+            path: DB_FILE
         });
     }
 });
@@ -145,19 +172,4 @@ server.use((err, req, res, next) => {
 });
 
 // Export for Vercel
-if (process.env.VERCEL) {
-    module.exports = server;
-} else {
-    const PORT = process.env.PORT || 3000;
-    server.listen(PORT, () => {
-        console.log(`Server is running on http://localhost:${PORT}`);
-        console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-        console.log('\nAvailable endpoints:');
-        console.log('GET /api - API documentation');
-        console.log('GET /api/team - Team information');
-        console.log('GET /api/pmmatches - PM matches');
-        console.log('GET /api/qmmatches - QM matches');
-        console.log('GET /api/pomatches - PO matches');
-        console.log('GET /api/results - Results');
-    });
-}
+module.exports = server;
