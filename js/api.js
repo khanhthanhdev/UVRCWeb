@@ -26,109 +26,89 @@ const api = {
         });
     },
 
+    // Teams
+    async loadTeams() {
+        return await this.read('teams');
+    },
+    async loadTeam(id) {
+        return await this.read('teams', id);
+    },
+    async saveTeam(data) {
+        if (data.id) {
+            return await this.update('teams', data.id, data);
+        }
+        return await this.create('teams', data);
+    },
+    async deleteTeam(id) {
+        return await this.delete('teams', id);
+    },
+
     // QM Matches
     async loadQMMatches() {
         return await this.read('qmmatches');
     },
-    async loadQMMatch(matchnum) {
-        return await this.read('qmmatches', matchnum);
+    async loadQMMatch(id) {
+        return await this.read('qmmatches', id);
     },
-    async saveQMMatch(matchData) {
-        if (matchData.id) {
-            return await this.update('qmmatches', matchData.id, matchData);
-        } else {
-            return await this.create('qmmatches', matchData);
+    async saveQMMatch(data) {
+        if (data.id) {
+            return await this.update('qmmatches', data.id, data);
         }
+        return await this.create('qmmatches', data);
     },
-    async deleteQMMatch(matchnum) {
-        return await this.delete('qmmatches', matchnum);
+    async deleteQMMatch(id) {
+        return await this.delete('qmmatches', id);
     },
 
     // PM Matches
     async loadPMMatches() {
         return await this.read('pmmatches');
     },
-    async loadPMMatch(matchnum) {
-        return await this.read('pmmatches', matchnum);
+    async loadPMMatch(id) {
+        return await this.read('pmmatches', id);
     },
-    async savePMMatch(matchData) {
-        if (matchData.id) {
-            return await this.update('pmmatches', matchData.id, matchData);
-        } else {
-            return await this.create('pmmatches', matchData);
+    async savePMMatch(data) {
+        if (data.id) {
+            return await this.update('pmmatches', data.id, data);
         }
+        return await this.create('pmmatches', data);
     },
-    async deletePMMatch(matchnum) {
-        return await this.delete('pmmatches', matchnum);
+    async deletePMMatch(id) {
+        return await this.delete('pmmatches', id);
     },
 
     // PO Matches
     async loadPOMatches() {
         return await this.read('pomatches');
     },
-    async loadPOMatch(matchnum) {
-        return await this.read('pomatches', matchnum);
+    async loadPOMatch(id) {
+        return await this.read('pomatches', id);
     },
-    async savePOMatch(matchData) {
-        if (matchData.id) {
-            return await this.update('pomatches', matchData.id, matchData);
-        } else {
-            return await this.create('pomatches', matchData);
+    async savePOMatch(data) {
+        if (data.id) {
+            return await this.update('pomatches', data.id, data);
         }
+        return await this.create('pomatches', data);
     },
-    async deletePOMatch(matchnum) {
-        return await this.delete('pomatches', matchnum);
-    },
-
-    // Teams
-    async loadTeams() {
-        return await this.read('team');
-    },
-    async loadTeam(teamId) {
-        return await this.read('team', teamId);
-    },
-    async saveTeam(teamData) {
-        if (teamData.id) {
-            return await this.update('team', teamData.id, teamData);
-        } else {
-            return await this.create('team', teamData);
-        }
-    },
-    async deleteTeam(teamId) {
-        return await this.delete('team', teamId);
+    async deletePOMatch(id) {
+        return await this.delete('pomatches', id);
     },
 
     // Results
     async loadResults() {
         return await this.read('results');
     },
-    async loadResult(resultId) {
-        return await this.read('results', resultId);
+    async loadResult(id) {
+        return await this.read('results', id);
     },
-    async saveResult(resultData) {
-        if (resultData.id) {
-            return await this.update('results', resultData.id, resultData);
-        } else {
-            return await this.create('results', resultData);
+    async saveResult(data) {
+        if (data.id) {
+            return await this.update('results', data.id, data);
         }
+        return await this.create('results', data);
     },
-    async deleteResult(resultId) {
-        return await this.delete('results', resultId);
-    },
-
-    // PO Teams
-    async loadPOTeams() {
-        return await this.read('poteams');
-    },
-    async savePOTeams(teamData) {
-        if (teamData.id) {
-            return await this.update('poteams', teamData.id, teamData);
-        } else {
-            return await this.create('poteams', teamData);
-        }
-    },
-    async deletePOTeam(teamId) {
-        return await this.delete('poteams', teamId);
+    async deleteResult(id) {
+        return await this.delete('results', id);
     },
 
     // Error handling helper
