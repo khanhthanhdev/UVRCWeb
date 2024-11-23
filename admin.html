@@ -181,6 +181,25 @@
             color: white;
         }
 
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .info-text {
+            margin: 10px 0;
+            color: #666;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -217,7 +236,10 @@
         <div id="success-message" class="message success"></div>
         <div id="error-message" class="message error"></div>
 
-        <button class="add-btn" onclick="showAddForm()">Add New</button>
+        <div class="button-group">
+            <button class="add-btn" onclick="showAddForm()">Add New</button>
+            <button class="action-btn" onclick="showMatchGeneratorModal()">Generate Matches</button>
+        </div>
 
         <div id="data-container" class="content"></div>
     </div>
@@ -227,6 +249,35 @@
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <h2 id="modal-title">Add/Edit Item</h2>
             <form id="data-form" onsubmit="handleSubmit(event)"></form>
+        </div>
+    </div>
+
+    <div id="match-generator-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeMatchGeneratorModal()">&times;</span>
+            <h2>Generate Matches</h2>
+            <form id="match-generator-form" onsubmit="handleMatchGeneration(event)">
+                <div class="form-group">
+                    <label for="matchType">Match Type</label>
+                    <select id="matchType" name="matchType" required>
+                        <option value="qualification">Qualification Round</option>
+                        <option value="playoff">Playoff Round</option>
+                    </select>
+                </div>
+                <div id="qualification-options">
+                    <div class="form-group">
+                        <label for="roundsPerTeam">Rounds per Team</label>
+                        <input type="number" id="roundsPerTeam" name="roundsPerTeam" value="2" min="1" max="10">
+                    </div>
+                </div>
+                <div id="playoff-options" style="display: none;">
+                    <p>Top 8 teams will be automatically seeded into 4 alliances.</p>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" onclick="closeMatchGeneratorModal()" class="action-btn">Cancel</button>
+                    <button type="submit" class="action-btn edit-btn">Generate</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -453,6 +504,267 @@
             if (event.target === document.getElementById('modal')) {
                 closeModal();
             }
+        }
+
+        function showMatchGeneratorModal() {
+            document.getElementById('match-generator-modal').style.display = 'block';
+            
+            // Show/hide options based on match type
+            document.getElementById('matchType').addEventListener('change', function() {
+                const qualificationOptions = document.getElementById('qualification-options');
+                const playoffOptions = document.getElementById('playoff-options');
+                
+                if (this.value === 'qualification') {
+                    qualificationOptions.style.display = 'block';
+                    playoffOptions.style.display = 'none';
+                } else {
+                    qualificationOptions.style.display = 'none';
+                    playoffOptions.style.display = 'block';
+                }
+            });
+        }
+
+        function closeMatchGeneratorModal() {
+            document.getElementById('match-generator-modal').style.display = 'none';
+        }
+
+        async function handleMatchGeneration(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const matchType = formData.get('matchType');
+            
+            try {
+                if (matchType === 'qualification') {
+                    await generateQualificationMatches(parseInt(formData.get('roundsPerTeam')));
+                } else {
+                    await generatePlayoffMatches();
+                }
+                closeMatchGeneratorModal();
+                loadData();
+            } catch (error) {
+                console.error('Error generating matches:', error);
+                showMessage('Error generating matches: ' + (error.message || 'Unknown error'), 'error');
+            }
+        }
+
+        async function generateQualificationMatches(roundsPerTeam) {
+            // Get all teams
+            const teams = await api.loadTeams();
+            if (!teams || teams.length === 0) {
+                throw new Error('No teams available');
+            }
+
+            // Reset team stats for new qualification round
+            for (const team of teams) {
+                team.rp = 0;  // Ranking Points
+                team.mp = 0;  // Match Points (total score)
+                team.avg = 0; // Average score
+                team.pen = 0; // Penalty Points
+                await api.saveTeam(team);
+            }
+
+            // Calculate total matches needed
+            const totalMatches = Math.ceil((teams.length * roundsPerTeam) / 2);
+            const matches = [];
+
+            // Generate random matches
+            for (let i = 0; i < totalMatches; i++) {
+                const availableTeams = teams.filter(team => 
+                    matches.filter(m => m.hexred === team.teamcode || m.hexblue === team.teamcode).length < roundsPerTeam
+                );
+
+                if (availableTeams.length < 2) break;
+
+                // Randomly select two teams
+                const redIndex = Math.floor(Math.random() * availableTeams.length);
+                const redTeam = availableTeams[redIndex];
+                availableTeams.splice(redIndex, 1);
+
+                const blueIndex = Math.floor(Math.random() * availableTeams.length);
+                const blueTeam = availableTeams[blueIndex];
+
+                // Create match
+                matches.push({
+                    matchnum: i + 1,
+                    hexred: redTeam.teamcode,
+                    hexblue: blueTeam.teamcode,
+                    wwastered: 0, // White Waste
+                    wwasteblue: 0,
+                    circlered: 0, // Circle
+                    circleblue: 0,
+                    rwastered: 0, // Red Waste
+                    rwasteblue: 0,
+                    wwaterred: 0, // White Water
+                    wwaterblue: 0,
+                    wastehpred: 0, // Waste HP
+                    wastehpblue: 0,
+                    penred: 0,    // Penalties
+                    penblue: 0
+                });
+            }
+
+            // Save all matches
+            for (const match of matches) {
+                await api.saveQMMatch(match);
+            }
+
+            showMessage(`Generated ${matches.length} qualification matches`, 'success');
+        }
+
+        async function calculateTeamRankings() {
+            const teams = await api.loadTeams();
+            const matches = await api.loadQMMatches();
+            const results = await api.loadResults();
+
+            // Reset team stats
+            const teamStats = {};
+            teams.forEach(team => {
+                teamStats[team.teamcode] = {
+                    rp: 0,      // Ranking Points
+                    scores: [], // Array of scores for calculating average
+                    pen: 0      // Penalty Points
+                };
+            });
+
+            // Calculate stats from matches
+            for (const match of matches) {
+                const redScore = calculateTotalScore(match, 'red');
+                const blueScore = calculateTotalScore(match, 'blue');
+                const redPen = match.penred || 0;
+                const bluePen = match.penblue || 0;
+
+                // Update scores array
+                if (teamStats[match.hexred]) {
+                    teamStats[match.hexred].scores.push(redScore);
+                    teamStats[match.hexred].pen += redPen;
+                }
+                if (teamStats[match.hexblue]) {
+                    teamStats[match.hexblue].scores.push(blueScore);
+                    teamStats[match.hexblue].pen += bluePen;
+                }
+
+                // Award Ranking Points
+                // Win = 2 RP, Draw = 1 RP, Loss = 0 RP
+                if (redScore > blueScore) {
+                    teamStats[match.hexred].rp += 2;
+                } else if (blueScore > redScore) {
+                    teamStats[match.hexblue].rp += 2;
+                } else {
+                    // Draw
+                    teamStats[match.hexred].rp += 1;
+                    teamStats[match.hexblue].rp += 1;
+                }
+
+                // Bonus RP for clearing 100% of Game Elements
+                const totalElements = calculateTotalGameElements(match);
+                if (totalElements === 0) { // All elements cleared
+                    teamStats[match.hexred].rp += 1;
+                    teamStats[match.hexblue].rp += 1;
+                }
+            }
+
+            // Update team records
+            for (const team of teams) {
+                const stats = teamStats[team.teamcode];
+                if (stats) {
+                    team.rp = stats.rp;
+                    team.avg = stats.scores.length > 0 
+                        ? stats.scores.reduce((a, b) => a + b, 0) / stats.scores.length 
+                        : 0;
+                    team.pen = stats.pen;
+                    await api.saveTeam(team);
+                }
+            }
+        }
+
+        function calculateTotalScore(match, alliance) {
+            const prefix = alliance === 'red' ? '' : 'blue';
+            return (
+                match[`wwaste${prefix}`] +
+                match[`circle${prefix}`] +
+                match[`rwaste${prefix}`] +
+                match[`wwater${prefix}`] +
+                match[`wastehp${prefix}`]
+            );
+        }
+
+        function calculateTotalGameElements(match) {
+            return (
+                match.wwastered + match.wwasteblue +
+                match.circlered + match.circleblue +
+                match.rwastered + match.rwasteblue +
+                match.wwaterred + match.wwaterblue +
+                match.wastehpred + match.wastehpblue
+            );
+        }
+
+        async function generatePlayoffMatches() {
+            // Get all teams sorted by ranking criteria
+            const teams = await api.loadTeams();
+            if (!teams || teams.length < 8) {
+                throw new Error('Need at least 8 teams for playoffs');
+            }
+
+            // Sort teams by ranking criteria
+            const sortedTeams = teams.sort((a, b) => {
+                if (a.rp !== b.rp) return b.rp - a.rp;  // First by Ranking Points
+                if (a.avg !== b.avg) return b.avg - a.avg;  // Then by Average Score
+                return a.pen - b.pen;  // Finally by Penalty Points (lower is better)
+            }).slice(0, 8);
+
+            // Create initial playoff matches (Double Elimination format)
+            const matches = [
+                // Winners Bracket Round 1
+                {
+                    matchnum: 1,
+                    round: 'WB1',
+                    hexred: sortedTeams[0].teamcode,  // 1st seed
+                    hexblue: sortedTeams[7].teamcode, // 8th seed
+                    nextWin: 'WB2-1',
+                    nextLose: 'LB1-1'
+                },
+                {
+                    matchnum: 2,
+                    round: 'WB1',
+                    hexred: sortedTeams[3].teamcode,  // 4th seed
+                    hexblue: sortedTeams[4].teamcode, // 5th seed
+                    nextWin: 'WB2-1',
+                    nextLose: 'LB1-1'
+                },
+                {
+                    matchnum: 3,
+                    round: 'WB1',
+                    hexred: sortedTeams[2].teamcode,  // 3rd seed
+                    hexblue: sortedTeams[5].teamcode, // 6th seed
+                    nextWin: 'WB2-2',
+                    nextLose: 'LB1-2'
+                },
+                {
+                    matchnum: 4,
+                    round: 'WB1',
+                    hexred: sortedTeams[1].teamcode,  // 2nd seed
+                    hexblue: sortedTeams[6].teamcode, // 7th seed
+                    nextWin: 'WB2-2',
+                    nextLose: 'LB1-2'
+                }
+            ];
+
+            // Initialize all matches with zero scores
+            const baseMatch = {
+                wwastered: 0, wwasteblue: 0,
+                circlered: 0, circleblue: 0,
+                rwastered: 0, rwasteblue: 0,
+                wwaterred: 0, wwaterblue: 0,
+                wastehpred: 0, wastehpblue: 0,
+                penred: 0, penblue: 0
+            };
+
+            // Save all matches
+            for (const match of matches) {
+                await api.savePOMatch({ ...baseMatch, ...match });
+            }
+
+            showMessage(`Generated ${matches.length} playoff matches`, 'success');
         }
 
         // Initial load
