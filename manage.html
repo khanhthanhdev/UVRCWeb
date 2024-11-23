@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UVRC Tournament Management</title>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #A50C0C;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover {
+            background: #e0e0e0;
+        }
+
+        .nav-item.active {
+            background: #A50C0C;
+            color: white;
+        }
+
+        .content {
+            margin-top: 20px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background: #f8f8f8;
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: all 0.3s;
+        }
+
+        .edit-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .add-btn {
+            background: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .message {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .error {
+            background: #f44336;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .nav {
+                flex-direction: column;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>UVRC Tournament Management</h1>
+        
+        <div class="nav">
+            <button class="nav-item active" data-section="teams">Teams</button>
+            <button class="nav-item" data-section="qmmatches">QM Matches</button>
+            <button class="nav-item" data-section="pmmatches">PM Matches</button>
+            <button class="nav-item" data-section="pomatches">PO Matches</button>
+            <button class="nav-item" data-section="results">Results</button>
+            <button class="nav-item" data-section="poteams">PO Teams</button>
+        </div>
+
+        <div id="success-message" class="message success"></div>
+        <div id="error-message" class="message error"></div>
+
+        <button class="add-btn" onclick="showAddForm()">Add New</button>
+
+        <div id="data-container" class="content"></div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title">Add/Edit Item</h2>
+            <form id="data-form" onsubmit="handleSubmit(event)"></form>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = 'teams';
+        let currentItem = null;
+
+        const schemas = {
+            teams: ['id', 'teamname', 'teamcode', 'rp', 'mp', 'avg', 'pen'],
+            qmmatches: ['id', 'matchnum', 'hexred', 'hexblue', 'wwastered', 'wwasteblue', 'circlered', 'circleblue', 'rwastered', 'rwasteblue', 'wwaterred', 'wwaterblue', 'wastehpred', 'wastehpblue', 'penred', 'penblue'],
+            pmmatches: ['id', 'matchnum', 'hexred', 'hexblue', 'wwastered', 'wwasteblue', 'circlered', 'circleblue', 'rwastered', 'rwasteblue', 'wwaterred', 'wwaterblue', 'wastehpred', 'wastehpblue', 'penred', 'penblue'],
+            pomatches: ['id', 'matchnum', 'hexred', 'hexblue', 'wwastered', 'wwasteblue', 'circlered', 'circleblue', 'rwastered', 'rwasteblue', 'wwaterred', 'wwaterblue', 'wastehpred', 'wastehpblue', 'penred', 'penblue'],
+            results: ['id', 'teamcode', 'matchnum', 'score', 'rp', 'mp'],
+            poteams: ['id', 'teamcode', 'teamname', 'score']
+        };
+
+        // Initialize navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                currentSection = item.dataset.section;
+                loadData();
+            });
+        });
+
+        async function loadData() {
+            try {
+                const methodName = `load${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+                const data = await api[methodName]();
+                displayData(data);
+            } catch (error) {
+                showMessage(error.message, 'error');
+            }
+        }
+
+        function displayData(data) {
+            const fields = schemas[currentSection];
+            let html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            ${fields.map(field => `<th>${field}</th>`).join('')}
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.forEach(item => {
+                html += `
+                    <tr>
+                        ${fields.map(field => `<td>${item[field] || ''}</td>`).join('')}
+                        <td>
+                            <button class="action-btn edit-btn" onclick="editItem(${item.id})">Edit</button>
+                            <button class="action-btn delete-btn" onclick="deleteItem(${item.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('data-container').innerHTML = html;
+        }
+
+        function showAddForm() {
+            currentItem = null;
+            document.getElementById('modal-title').textContent = 'Add New Item';
+            generateForm();
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        async function editItem(id) {
+            try {
+                const methodName = `load${currentSection.slice(0, -1).charAt(0).toUpperCase() + currentSection.slice(1, -1)}`;
+                currentItem = await api[methodName](id);
+                document.getElementById('modal-title').textContent = 'Edit Item';
+                generateForm();
+                document.getElementById('modal').style.display = 'block';
+            } catch (error) {
+                showMessage(error.message, 'error');
+            }
+        }
+
+        async function deleteItem(id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                try {
+                    const methodName = `delete${currentSection.slice(0, -1).charAt(0).toUpperCase() + currentSection.slice(1, -1)}`;
+                    await api[methodName](id);
+                    showMessage('Item deleted successfully', 'success');
+                    loadData();
+                } catch (error) {
+                    showMessage(error.message, 'error');
+                }
+            }
+        }
+
+        function generateForm() {
+            const fields = schemas[currentSection];
+            let html = '';
+            
+            fields.forEach(field => {
+                if (field !== 'id') {
+                    html += `
+                        <div class="form-group">
+                            <label for="${field}">${field}</label>
+                            <input type="text" id="${field}" name="${field}" 
+                                value="${currentItem ? currentItem[field] || '' : ''}" required>
+                        </div>
+                    `;
+                }
+            });
+
+            html += `
+                <div class="form-buttons">
+                    <button type="button" onclick="closeModal()" class="action-btn">Cancel</button>
+                    <button type="submit" class="action-btn edit-btn">Save</button>
+                </div>
+            `;
+
+            document.getElementById('data-form').innerHTML = html;
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            if (currentItem) {
+                data.id = currentItem.id;
+            }
+
+            try {
+                const methodName = `save${currentSection.slice(0, -1).charAt(0).toUpperCase() + currentSection.slice(1, -1)}`;
+                await api[methodName](data);
+                showMessage('Item saved successfully', 'success');
+                closeModal();
+                loadData();
+            } catch (error) {
+                showMessage(error.message, 'error');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function showMessage(message, type) {
+            const element = document.getElementById(`${type}-message`);
+            element.textContent = message;
+            element.style.display = 'block';
+            setTimeout(() => element.style.display = 'none', 3000);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('modal')) {
+                closeModal();
+            }
+        }
+
+        // Initial load
+        loadData();
+    </script>
+</body>
+</html>
