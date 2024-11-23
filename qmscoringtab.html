@@ -200,9 +200,13 @@
         const plainFormData = Object.fromEntries(formData.entries());
         
         try {
-            const result = await api.saveQMMatch(plainFormData);
+            // Update the match score using the new scoring system
+            const result = await api.updateMatchScore('QM', plainFormData.id, plainFormData);
             console.log('Match data saved:', result);
             config.showError('Match data saved successfully!');
+            
+            // Refresh the display
+            await display(plainFormData.id);
         } catch (error) {
             console.error('Error saving match data:', error);
             config.showError('Failed to save match data: ' + error.message);
