@@ -212,7 +212,6 @@
             <button class="nav-item" data-section="pmmatches">PM Matches</button>
             <button class="nav-item" data-section="pomatches">PO Matches</button>
             <button class="nav-item" data-section="results">Results</button>
-            <button class="nav-item" data-section="poteams">PO Teams</button>
         </div>
 
         <div id="success-message" class="message success"></div>
@@ -240,8 +239,7 @@
             qmmatches: ['id', 'matchnum', 'hexred', 'hexblue', 'wwastered', 'wwasteblue', 'circlered', 'circleblue', 'rwastered', 'rwasteblue', 'wwaterred', 'wwaterblue', 'wastehpred', 'wastehpblue', 'penred', 'penblue'],
             pmmatches: ['id', 'matchnum', 'hexred', 'hexblue', 'wwastered', 'wwasteblue', 'circlered', 'circleblue', 'rwastered', 'rwasteblue', 'wwaterred', 'wwaterblue', 'wastehpred', 'wastehpblue', 'penred', 'penblue'],
             pomatches: ['id', 'matchnum', 'hexred', 'hexblue', 'wwastered', 'wwasteblue', 'circlered', 'circleblue', 'rwastered', 'rwasteblue', 'wwaterred', 'wwaterblue', 'wastehpred', 'wastehpblue', 'penred', 'penblue'],
-            results: ['id', 'teamcode', 'matchnum', 'score', 'rp', 'mp'],
-            poteams: ['id', 'teamcode', 'teamname', 'score']
+            results: ['id', 'teamcode', 'matchnum', 'score', 'rp', 'mp']
         };
 
         // Initialize navigation
@@ -273,15 +271,13 @@
                     case 'results':
                         data = await api.loadResults();
                         break;
-                    case 'poteams':
-                        data = await api.loadPOTeams();
-                        break;
                     default:
                         throw new Error('Unknown section type');
                 }
-                displayData(data);
+                displayData(Array.isArray(data) ? data : []);
             } catch (error) {
-                showMessage(error.message || 'Error loading data', 'error');
+                console.error('Error loading data:', error);
+                showMessage('Error loading data: ' + (error.message || 'Unknown error'), 'error');
             }
         }
 
@@ -314,13 +310,6 @@
             document.getElementById('data-container').innerHTML = html;
         }
 
-        function showAddForm() {
-            currentItem = null;
-            document.getElementById('modal-title').textContent = 'Add New Item';
-            generateForm();
-            document.getElementById('modal').style.display = 'block';
-        }
-
         async function editItem(id) {
             try {
                 let item = null;
@@ -340,9 +329,6 @@
                     case 'results':
                         item = await api.loadResult(id);
                         break;
-                    case 'poteams':
-                        // No single item load for PO Teams
-                        break;
                     default:
                         throw new Error('Unknown section type');
                 }
@@ -351,7 +337,8 @@
                 generateForm();
                 document.getElementById('modal').style.display = 'block';
             } catch (error) {
-                showMessage(error.message || 'Error loading item', 'error');
+                console.error('Error editing item:', error);
+                showMessage('Error editing item: ' + (error.message || 'Unknown error'), 'error');
             }
         }
 
@@ -374,16 +361,14 @@
                         case 'results':
                             await api.deleteResult(id);
                             break;
-                        case 'poteams':
-                            await api.deletePOTeam(id);
-                            break;
                         default:
                             throw new Error('Unknown section type');
                     }
                     showMessage('Item deleted successfully', 'success');
                     loadData();
                 } catch (error) {
-                    showMessage(error.message || 'Error deleting item', 'error');
+                    console.error('Error deleting item:', error);
+                    showMessage('Error deleting item: ' + (error.message || 'Unknown error'), 'error');
                 }
             }
         }
@@ -440,9 +425,6 @@
                     case 'results':
                         await api.saveResult(data);
                         break;
-                    case 'poteams':
-                        await api.savePOTeams(data);
-                        break;
                     default:
                         throw new Error('Unknown section type');
                 }
@@ -450,7 +432,8 @@
                 closeModal();
                 loadData();
             } catch (error) {
-                showMessage(error.message || 'Error saving item', 'error');
+                console.error('Error saving item:', error);
+                showMessage('Error saving item: ' + (error.message || 'Unknown error'), 'error');
             }
         }
 
