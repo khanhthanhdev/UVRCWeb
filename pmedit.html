@@ -56,7 +56,7 @@
     <table border="white" id="mytable">
       <tr>
         <td>
-          <form action="http://localhost:3000/team/1" id="form1" name="KAT">
+          <form action="https://uvrc-web.vercel.app/team/1" id="form1" name="KAT">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -69,7 +69,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/2" id="form2" name="ABS">
+          <form action="https://uvrc-web.vercel.app/team/2" id="form2" name="ABS">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -82,7 +82,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/3" id="form3" name="URA">
+          <form action="https://uvrc-web.vercel.app/team/3" id="form3" name="URA">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -95,7 +95,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/4" id="form4" name="99F">
+          <form action="https://uvrc-web.vercel.app/team/4" id="form4" name="99F">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -107,7 +107,7 @@
         </td>
       </tr><tr>
         <td>
-          <form action="http://localhost:3000/team/5" id="form5" name="RAS">
+          <form action="https://uvrc-web.vercel.app/team/5" id="form5" name="RAS">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -120,7 +120,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/6" id="form6" name="COS">
+          <form action="https://uvrc-web.vercel.app/team/6" id="form6" name="COS">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -133,7 +133,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/7" id="form7" name="CRA">
+          <form action="https://uvrc-web.vercel.app/team/7" id="form7" name="CRA">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -146,7 +146,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/8" id="form8" name="ENT">
+          <form action="https://uvrc-web.vercel.app/team/8" id="form8" name="ENT">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -159,7 +159,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/9" id="form9" name="FRT">
+          <form action="https://uvrc-web.vercel.app/team/9" id="form9" name="FRT">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -172,7 +172,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/10" id="form10" name="PKK">
+          <form action="https://uvrc-web.vercel.app/team/10" id="form10" name="PKK">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -185,7 +185,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/11" id="form11" name="SYH">
+          <form action="https://uvrc-web.vercel.app/team/11" id="form11" name="SYH">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -198,7 +198,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/12" id="form12" name="PIT">
+          <form action="https://uvrc-web.vercel.app/team/12" id="form12" name="PIT">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -211,7 +211,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/13" id="form13" name="FBG">
+          <form action="https://uvrc-web.vercel.app/team/13" id="form13" name="FBG">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -224,7 +224,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/14" id="form14" name="GRL">
+          <form action="https://uvrc-web.vercel.app/team/14" id="form14" name="GRL">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -237,7 +237,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/15" id="form15" name="FAF">
+          <form action="https://uvrc-web.vercel.app/team/15" id="form15" name="FAF">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -250,7 +250,7 @@
       </tr>
       <tr>
         <td>
-          <form action="http://localhost:3000/team/16" id="form16" name="ROE">
+          <form action="https://uvrc-web.vercel.app/team/16" id="form16" name="ROE">
             <input type="number" name="teamid">
           </form>
         </td>
@@ -319,9 +319,9 @@
   async function getteamid(teamid, name) {
     if (teamid == 1) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM1", {red1: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.1", {red1: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.4", {blue1: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM1", {red1: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.1", {red1: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.4", {blue1: name});
 
         console.log({ responseData });
         console.log({ responseData2 });
@@ -333,9 +333,9 @@
     }
     if (teamid == 2) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM1", {red2: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.2", {red1: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.1", {blue2: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM1", {red2: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.2", {red1: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.1", {blue2: name});
 
         console.log({ responseData });
         console.log({ responseData2 });
@@ -347,9 +347,9 @@
     }
     if (teamid == 3) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM1", {blue1: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.3", {red1: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.3", {blue1: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM1", {blue1: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.3", {red1: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.3", {blue1: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -360,9 +360,9 @@
     }
     if (teamid == 4) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM1", {blue2: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.4", {red1: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.2", {blue2: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM1", {blue2: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.4", {red1: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.2", {blue2: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -374,9 +374,9 @@
     }
     if (teamid == 5) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM2", {red1: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.1", {red2: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.4", {red2: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM2", {red1: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.1", {red2: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.4", {red2: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -388,9 +388,9 @@
     }
     if (teamid == 6) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM2", {red2: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.2", {red2: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.3", {blue2: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM2", {red2: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.2", {red2: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.3", {blue2: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -402,9 +402,9 @@
     }
     if (teamid == 7) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM2", {blue1: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.3", {red2: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.1", {red2: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM2", {blue1: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.3", {red2: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.1", {red2: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -416,9 +416,9 @@
     }
     if (teamid == 8) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM2", {blue2: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.4", {red2: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.4", {blue2: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM2", {blue2: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.4", {red2: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.4", {blue2: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -430,9 +430,9 @@
     }
     if (teamid == 9) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM3", {red1: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.1", {blue1: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.1", {blue1: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM3", {red1: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.1", {blue1: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.1", {blue1: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -444,9 +444,9 @@
     }
     if (teamid == 10) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM3", {red2: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.2", {blue1: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.4", {red1: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM3", {red2: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.2", {blue1: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.4", {red1: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -458,9 +458,9 @@
     }
     if (teamid == 11) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM3", {blue1: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.3", {blue1: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.2", {red2: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM3", {blue1: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.3", {blue1: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.2", {red2: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -472,9 +472,9 @@
     }
     if (teamid == 12) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM3", {blue2: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.4", {blue1: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.3", {red1: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM3", {blue2: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.4", {blue1: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.3", {red1: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -486,9 +486,9 @@
     }
     if (teamid == 13) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM4", {red1: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.1", {blue2: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.2", {blue1: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM4", {red1: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.1", {blue2: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.2", {blue1: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -500,9 +500,9 @@
     }
     if (teamid == 14) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM4", {red2: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.2", {blue2: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.2", {red1: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM4", {red2: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.2", {blue2: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.2", {red1: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -514,9 +514,9 @@
     }
     if (teamid == 15) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM4", {blue1: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.3", {blue2: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.3", {red2: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM4", {blue1: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.3", {blue2: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.3", {red2: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});
@@ -528,9 +528,9 @@
     }
     if (teamid == 16) {
       try {
-        const responseData = await postFormDataAsJson("http://localhost:3000/pmmatches/PM4", {blue2: name});
-        const responseData2 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM1.4", {blue2: name});
-        const responseData3 = await postFormDataAsJson("http://localhost:3000/qmmatches/QM2.1", {red1: name});
+        const responseData = await postFormDataAsJson("https://uvrc-web.vercel.app/pmmatches/PM4", {blue2: name});
+        const responseData2 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM1.4", {blue2: name});
+        const responseData3 = await postFormDataAsJson("https://uvrc-web.vercel.app/qmmatches/QM2.1", {red1: name});
         console.log({ responseData });
         console.log({ responseData2 });
         console.log({responseData3});

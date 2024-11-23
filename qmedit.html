@@ -1,153 +1,153 @@
-  <!DOCTYPE html>
-  <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>MATCHES EDIT</title>
-  </head>
-  <style>
-      h1 {
-          font-family:'Noto Sans';
-          margin-top: 10px;
-          font-size: 42px;
-          text-align: center;
-          color: #A50C0C;
-          font-weight: bold;
-        }
-      th {
-          font-family: 'Noto Sans';
-          font-size: 24px;
-          text-align: center;
-          font-weight: bold;
-          color: #A50C0C;
-          border-width: 2px;
-          
-          
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATCHES EDIT</title>
+</head>
+<style>
+    h1 {
+        font-family:'Noto Sans';
+        margin-top: 10px;
+        font-size: 42px;
+        text-align: center;
+        color: #A50C0C;
+        font-weight: bold;
       }
-      tr{
-          width: 1000px;
-      }
-      td {
-          font-family: 'Noto Sans';
-          font-size: 21px;
-          text-align: center;
-          border-width: 2px;
-      }
-      table {
-          border-collapse: collapse;
-          margin-left: auto;
-          margin-right: auto;
-      }
-      .tnum {
-          width: 200px;
-      }
-      .tname {
-          width: 300px;
-      }
-      .tcode {
-          width: 300px;
-      }
-  </style>
+    th {
+        font-family: 'Noto Sans';
+        font-size: 24px;
+        text-align: center;
+        font-weight: bold;
+        color: #A50C0C;
+        border-width: 2px;
+        
+        
+    }
+    tr{
+        width: 1000px;
+    }
+    td {
+        font-family: 'Noto Sans';
+        font-size: 21px;
+        text-align: center;
+        border-width: 2px;
+    }
+    table {
+        border-collapse: collapse;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .tnum {
+        width: 200px;
+    }
+    .tname {
+        width: 300px;
+    }
+    .tcode {
+        width: 300px;
+    }
+</style>
 
-  <body>
-      <h1>UVRC - MATCHES EDIT</h1>
-      <table border="white" id="mytable">
-        <tr>
-          <th class="tnum">#</th>
-          <th class="tname">Blue 1</th>
-          <th class="tname">Blue 2</th>
-          <th class="tname">Red 1</th>
-          <th class="tname">Red 2</th>
-          <th>Save</th>
-        </tr>
-        <tr>
-          <form action="" id="form1">
-          <td id="matchid">
-            <input type="text" name="matchnum" id="matchnum">
-            <input type="submit" value="save">
-          </td>
-      </form>
-          <form id="form2">
-            <td>
-                <input type="text" name="blue1" id="blue1">
-            </td>
-            <td>
-                <input type="text" name="blue2" id="blue2">
-            </td>
-            <td>
-              <input type="text" name="red1" id="red1">
+<body>
+    <h1>UVRC - MATCHES EDIT</h1>
+    <table border="white" id="mytable">
+      <tr>
+        <th class="tnum">#</th>
+        <th class="tname">Blue 1</th>
+        <th class="tname">Blue 2</th>
+        <th class="tname">Red 1</th>
+        <th class="tname">Red 2</th>
+        <th>Save</th>
+      </tr>
+      <tr>
+        <form action="" id="form1">
+        <td id="matchid">
+          <input type="text" name="matchnum" id="matchnum">
+          <input type="submit" value="save">
+        </td>
+    </form>
+        <form id="form2">
+          <td>
+              <input type="text" name="blue1" id="blue1">
           </td>
           <td>
-              <input type="text" name="red2" id="red2">
+              <input type="text" name="blue2" id="blue2">
           </td>
-            <td>
-              <input type="submit" value="Save">
-            </td>
-          </form>
-        </tr>
+          <td>
+            <input type="text" name="red1" id="red1">
+        </td>
+        <td>
+            <input type="text" name="red2" id="red2">
+        </td>
+          <td>
+            <input type="submit" value="Save">
+          </td>
+        </form>
+      </tr>
 
 
-  </table>
+</table>
+
+<script>
+  async function postFormDataAsJson({ url, formData }) {
+    const plainFormData = Object.fromEntries(formData.entries());
+    const formDataJsonString = JSON.stringify(plainFormData);
+    const fetchOptions = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: formDataJsonString,
+    };
   
-  <script>
-    async function postFormDataAsJson({ url, formData }) {
-      const plainFormData = Object.fromEntries(formData.entries());
-      const formDataJsonString = JSON.stringify(plainFormData);
-      const fetchOptions = {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: formDataJsonString,
-      };
-    
-      const response = await fetch(url, fetchOptions);
-    
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(errorMessage);
-      }
-    
-      return response.json();
+    const response = await fetch(url, fetchOptions);
+  
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
     }
+  
+    return response.json();
+  }
 
-    async function handleFormSubmit(event) {
-      event.preventDefault();
-    
-      const form = event.currentTarget;
-      const matchnum = document.getElementById("matchid").innerHTML;
-      const url = "http://localhost:3000/qmmatches/" + matchnum;
-    
-      try {
+  async function handleFormSubmit(event) {
+    event.preventDefault();
+  
+    const form = event.currentTarget;
+    const matchnum = document.getElementById("matchid").innerHTML;
+    const url = "https://uvrc-web.vercel.app/qmmatches/" + matchnum;
+  
+    try {
+      const formData = new FormData(form);
+      const responseData = await postFormDataAsJson({ url, formData });
+  
+      console.log({ responseData });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async function getmatchnum(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    try {
         const formData = new FormData(form);
-        const responseData = await postFormDataAsJson({ url, formData });
-    
-        console.log({ responseData });
-      } catch (error) {
-        console.error(error);
-      }
+        const plainFormData = Object.fromEntries(formData.entries());
+        document.getElementById("matchid").innerHTML = plainFormData.matchnum;
     }
-    async function getmatchnum(event) {
-      event.preventDefault();
-      const form = event.currentTarget;
-      try {
-          const formData = new FormData(form);
-          const plainFormData = Object.fromEntries(formData.entries());
-          document.getElementById("matchid").innerHTML = plainFormData.matchnum;
-      }
-      catch (error) {
-          console.error(error);
-      }
-    } 
-    
-    const Form1 = document.getElementById("form1");
-    Form1.addEventListener("submit", getmatchnum);
-    const Form2 = document.getElementById("form2");
-    Form2.addEventListener("submit", handleFormSubmit);
+    catch (error) {
+        console.error(error);
+    }
+  } 
+  
+  const Form1 = document.getElementById("form1");
+  Form1.addEventListener("submit", getmatchnum);
+  const Form2 = document.getElementById("form2");
+  Form2.addEventListener("submit", handleFormSubmit);
 
-  </script>
+</script>
 
-  </body>
-  </html>
+</body>
+</html>

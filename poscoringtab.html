@@ -212,7 +212,7 @@
         event.preventDefault();
         const matchnum = document.getElementById("dmatchnum").innerHTML
         matchid = matchnum;
-        const url = "http://localhost:3000/pomatches/" + matchnum;
+        const url = "https://uvrc-web.vercel.app/pomatches/" + matchnum;
         const form = event.currentTarget;
         try {
             const formData = new FormData(form);
@@ -379,7 +379,7 @@
                 document.getElementById("dablue").innerHTML = 0;
             }
         }
-        xmlhttp.open("GET", "http://localhost:3000/pomatches/" + matchnum);
+        xmlhttp.open("GET", "https://uvrc-web.vercel.app/pomatches/" + matchnum);
         xmlhttp.send();
     }
 
@@ -392,120 +392,120 @@
     function winneradvance(fscorered, fscoreblue) {
         if (matchid == "PO1") {
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO7", {red1: red1, red2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO5", {red1: blue1, red2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO7", {red1: red1, red2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO5", {red1: blue1, red2: blue2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO5", {red1: red1, red2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO7", {red1: blue1, red2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO5", {red1: red1, red2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO7", {red1: blue1, red2: blue2});
             }
         }
         if (matchid == "PO2") {
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO7", {blue1: red1, blue2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO5", {blue1: blue1, blue2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO7", {blue1: red1, blue2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO5", {blue1: blue1, blue2: blue2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO5", {blue1: red1, blue2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO7", {blue1: blue1, blue2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO5", {blue1: red1, blue2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO7", {blue1: blue1, blue2: blue2});
             }
         }
         if (matchid == "PO3") {
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO8", {red1: red1, red2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO6", {red1: blue1, red2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO8", {red1: red1, red2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO6", {red1: blue1, red2: blue2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO6", {red1: red1, red2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO8", {red1: blue1, red2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO6", {red1: red1, red2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO8", {red1: blue1, red2: blue2});
             }
         }
         if (matchid == "PO4") { 
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO8", {blue1: red1, blue2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO6", {blue1: blue1, blue2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO8", {blue1: red1, blue2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO6", {blue1: blue1, blue2: blue2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO6", {blue1: red1, blue2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO8", {blue1: blue1, blue2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO6", {blue1: red1, blue2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO8", {blue1: blue1, blue2: blue2});
             }
         }
         if (matchid == "PO5") { 
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO9", {red1: red1, red2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO9", {red1: red1, red2: red2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO9", {red1: blue1, red2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO9", {red1: blue1, red2: blue2});
             }
         }
         if (matchid == "PO6") { 
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO10", {blue1: red1, blue2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO10", {blue1: red1, blue2: red2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO10", {blue1: blue1, blue2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO10", {blue1: blue1, blue2: blue2});
             }
         }
         if (matchid == "PO7") { 
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO11", {red1: red1, red2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO9", {blue1: blue1, blue2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO11", {red1: red1, red2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO9", {blue1: blue1, blue2: blue2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO9", {blue1: red1, blue2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO11", {red1: blue1, red2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO9", {blue1: red1, blue2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO11", {red1: blue1, red2: blue2});
             }
         }
         if (matchid == "PO8") { 
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO11", {blue1: red1, blue2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO10", {red1: blue1, red2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO11", {blue1: red1, blue2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO10", {red1: blue1, red2: blue2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO10", {red1: red1, red2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO11", {blue1: blue1, blue2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO10", {red1: red1, red2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO11", {blue1: blue1, blue2: blue2});
             }
         }
         if (matchid == "PO9") { 
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO10", {red1: red1, red2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO10", {red1: red1, red2: red2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO10", {red1: blue1, red2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO10", {red1: blue1, red2: blue2});
             }
         }
         if (matchid == "PO10") { 
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO10", {blue1: red1, blue2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO10", {blue1: red1, blue2: red2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO10", {blue1: blue1, blue2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO10", {blue1: blue1, blue2: blue2});
             }
         }
         if (matchid == "PO11") { 
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO14", {red1: red1, red2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO13", {red1: blue1, red2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO14", {red1: red1, red2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO13", {red1: blue1, red2: blue2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO13", {red1: red1, red2: red2});
-                postFormDataAsJson("http://localhost:3000/pomatches/PO14", {red1: blue1, red2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO13", {red1: red1, red2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO14", {red1: blue1, red2: blue2});
             }
         }
         if (matchid == "PO12") { 
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO13", {blue1: red1, blue2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO13", {blue1: red1, blue2: red2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO13", {blue1: blue1, blue2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO13", {blue1: blue1, blue2: blue2});
             }
         }
         if (matchid == "PO13") { 
             if (fscorered > fscoreblue) {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO14", {blue1: red1, blue2: red2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO14", {blue1: red1, blue2: red2});
             }
             else {
-                postFormDataAsJson("http://localhost:3000/pomatches/PO14", {blue1: blue1, blue2: blue2});
+                postFormDataAsJson("https://uvrc-web.vercel.app/pomatches/PO14", {blue1: blue1, blue2: blue2});
             }
         }
     }
