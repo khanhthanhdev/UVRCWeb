@@ -1,10 +1,7 @@
 // Configuration for the application
 const config = {
-    // API base URL - automatically detect environment
-    get apiBaseUrl() {
-        const isProduction = window.location.hostname === 'uvrc-web.vercel.app';
-        return isProduction ? 'https://uvrc-web.vercel.app' : 'http://localhost:3000';
-    },
+    // API base URL - change this for different environments
+    apiBaseUrl: 'https://uvrc-web.vercel.app/api', // Use local server for now
 
     // Helper function to make API calls
     async fetchApi(endpoint, options = {}) {
@@ -52,10 +49,10 @@ const config = {
         errorDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #ff4444; color: white; padding: 15px; border-radius: 5px; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.2);';
         errorDiv.textContent = message;
         document.body.appendChild(errorDiv);
-        
-        // Remove the error message after 5 seconds
         setTimeout(() => {
-            errorDiv.remove();
-        }, 5000);
+            errorDiv.style.opacity = '0';
+            errorDiv.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => errorDiv.remove(), 500);
+        }, 4500);
     }
 };

@@ -64,33 +64,56 @@ server.get('/api', (req, res) => {
     });
 });
 
-// Mount the router under /api
-server.use('/api', router);
+// Mount json-server router under /api
+server.use('/api', (req, res, next) => {
+    // Ensure db.json exists and is readable
+    try {
+        require('./db.json');
+        next();
+    } catch (error) {
+        console.error('Error reading db.json:', error);
+        res.status(500).json({ error: 'Database file not accessible' });
+    }
+}, router);
 
-// Add health check endpoint
+// Health check endpoint
 server.get('/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    res.json({ 
+        status: 'UP',
+        timestamp: new Date().toISOString(),
+        environment: process.env.VERCEL ? 'production' : 'development'
+    });
 });
 
-// Handle 404s
-server.use((req, res) => {
-    console.log(`404 - Not Found: ${req.method} ${req.path}`);
-    res.status(404).json({ error: 'Not Found' });
+// Handle all other routes by serving index.html
+server.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'index.html'));
 });
 
-// Error handler
+// Error handling middleware
 server.use((err, req, res, next) => {
-    console.error('Server Error:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error(err.stack);
+    res.status(500).json({
+        error: 'Something went wrong!',
+        message: err.message,
+        path: req.path
+    });
 });
 
-// Start server if not running as serverless
-if (process.env.NODE_ENV !== 'production') {
+// Export for Vercel
+if (process.env.VERCEL) {
+    module.exports = server;
+} else {
     const PORT = process.env.PORT || 3000;
     server.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+        console.log(`Server is running on http://localhost:${PORT}`);
+        console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log('\nAvailable endpoints:');
+        console.log('GET /api - API documentation');
+        console.log('GET /api/team - Team information');
+        console.log('GET /api/pmmatches - PM matches');
+        console.log('GET /api/qmmatches - QM matches');
+        console.log('GET /api/pomatches - PO matches');
+        console.log('GET /api/results - Results');
     });
 }
-
-// Export for serverless
-module.exports = server;
